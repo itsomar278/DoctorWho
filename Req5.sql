@@ -3,7 +3,10 @@ USE DoctorWho;
 INSERT INTO tblCompanion(CompanionName, WhoPayed)
 Values 
     ('companion0000','payer00000');
---The Delete query
-DELETE FROM tblCompanion
- WHERE CompanionId NOT IN (SELECT EC.CompanionId
-                            FROM tblEpisodeCompanion EC);
+--The Delete query with joins
+delete C
+from tblCompanion C
+left join tblEpisodeCompanion EC 
+ON C.CompanionId = EC.CompanionId
+where EC.CompanionId is null
+
