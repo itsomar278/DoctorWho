@@ -1,16 +1,22 @@
-CREATE Function fnEnemies (@EpisodeId INT)
-RETURNS @Enemies TABLE 
-(
-EnemyName VARCHAR(255)
-)
-As
+-- functions were drop and recreated cause return type isnt the same so we cannot alter them 
+-- i hate dealing with string in sql :)
+DROP FUNCTION fnEnemies ;
+CREATE FUNCTION fnEnemies (@EpisodeId INT)
+RETURNS VARCHAR(MAX)
+AS
 BEGIN
-    INSERT INTO @Enemies
-     SELECT EnemyName 
+Declare @output AS VARCHAR(MAX)
+    SELECT @output = CONCAT( 'Enemy No ' ,
+	                          CAST(ROW_NUMBER() OVER(order by E.EnemyId) AS varchar ) 
+							  , ' : '
+							 , E.EnemyName
+							 , ' , '
+							 , @output)
 	 FROM tblEnemy E
 	 INNER JOIN tblEpisodeEnemy AS EE
 	 ON E.EnemyId = EE.EnemyId
 	 WHERE @EpisodeId = EE.EpisodeId
-RETURN; 
+RETURN @Output; 
 END;
+
 
